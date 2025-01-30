@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.util.Map;
 
-@Component
+//@Component
 public class TestCaseProcessorRoute extends RouteBuilder {
 
     private final DataSource dataSource;

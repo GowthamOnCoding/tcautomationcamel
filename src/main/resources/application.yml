@@ -10,7 +10,7 @@ spring:
       idle-timeout: 300000
   jpa:
     hibernate:
-      ddl-auto: update  # or 'validate', 'create', 'create-drop'
+      ddl-auto: validate  # or 'validate', 'create', 'create-drop'
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -28,6 +28,6 @@ logging:
     com.boa.TcautomationApplication: DEBUG
 
 ssh:
-  port: your_port
+  port: 22
   user: your_user
   password: your_password

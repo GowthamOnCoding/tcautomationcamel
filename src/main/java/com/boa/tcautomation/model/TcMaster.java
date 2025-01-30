@@ -17,4 +17,6 @@ public class TcMaster {
     private LocalDateTime createdDate;
     private String modifiedBy;
     private LocalDateTime modifiedDate;
+    private String is_active;
+    private String ait_no;
 }

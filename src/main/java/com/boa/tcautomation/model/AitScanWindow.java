@@ -16,8 +16,8 @@ public class AitScanWindow {
     private String aitNo;
     private String dbType;
     private String scanDay;
-    private LocalDateTime startTimeEst;
-    private LocalDateTime endTimeEst;
+    private String startTimeEst;
+    private String endTimeEst;
     private LocalDateTime lastUpdated;
     private String lastUpdatedUser;
     private String profile;
