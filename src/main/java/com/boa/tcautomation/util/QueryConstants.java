@@ -12,4 +12,5 @@ public class QueryConstants {
             "('<AIT_NO>', '<DB_TYPE>', 'FRI', '00:00', '23:59', CURRENT_TIMESTAMP, 'system', 'public')," +
             "('<AIT_NO>', '<DB_TYPE>', 'SAT', '00:00', '23:59', CURRENT_TIMESTAMP, 'system', 'public')," +
             "('<AIT_NO>', '<DB_TYPE>', 'SUN', '00:00', '23:59', CURRENT_TIMESTAMP, 'system', 'public')";
+    public static final String SELECT_TC_STEPS_BY_TC_ID = "SELECT * FROM tc_steps WHERE TC_ID='<TC_ID>' ORDER BY SEQUENCE_NO";
 }

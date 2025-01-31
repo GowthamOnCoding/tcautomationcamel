@@ -1,6 +1,8 @@
 package com.boa.tcautomation.route;
-import com.boa.tcautomation.model.AitDbProp;
+
 import com.boa.tcautomation.model.TcMaster;
+import com.boa.tcautomation.model.TcSteps;
+import com.boa.tcautomation.service.TcMasterService;
 import com.boa.tcautomation.util.DbUtil;
 import com.boa.tcautomation.util.QueryConstants;
 import org.apache.camel.builder.RouteBuilder;
@@ -20,6 +22,9 @@ public class QueryTcMasterRoute extends RouteBuilder {
     @Autowired
     private DbUtil dbUtil;
 
+    @Autowired
+    private TcMasterService tcMasterService;
+
     /**
      * Configures the routes for querying TcMaster records and processing each test case.
      */
@@ -37,7 +42,7 @@ public class QueryTcMasterRoute extends RouteBuilder {
                     // Create an ExecutorService to run tasks in virtual threads
                     ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
                     // Submit a task for each TcMaster to process the test case
-                for (TcMaster tcMaster : activeTcMasters) {
+                    for (TcMaster tcMaster : activeTcMasters) {
                         executor.submit(() -> {
                             // Send the TcMaster object to the direct:processTestCase route
                             getContext().createProducerTemplate().sendBody("direct:processTestCase", tcMaster);
@@ -54,39 +59,12 @@ public class QueryTcMasterRoute extends RouteBuilder {
         // Route to process each test case
         from("direct:processTestCase")
                 .process(exchange -> {
-                    // Get the TcMaster object from the exchange body
                     TcMaster tcMaster = exchange.getIn().getBody(TcMaster.class);
-                    log.info("Processing test case: " + tcMaster.getTcId());
-                    String aitNo = tcMaster.getAit_no();
-                    if(aitNo.startsWith("AIT_")) {
-                        aitNo=aitNo.replace("AIT_", "");
-                        log.info("Processing AIT test case: " + tcMaster.getTcId());
-                    } else {
-                        log.info("Processing non-AIT test case: " + tcMaster.getTcId());
-                    }
-                    String sql = QueryConstants.SELECT_AIT_DB_PROPS.replace("<AIT_NO>", aitNo);
-                    List<AitDbProp> aitDbProps = dbUtil.queryForListWithMapping(sql, AitDbProp.class);
-                    for(AitDbProp aitDbProp : aitDbProps) {
-                        log.info("AIT DB Prop: " + aitDbProp);
-                        // Step 1: Delete existing records in ait_scan_window table
-                        String deleteSql = QueryConstants.DELETE_AIT_SCAN_WINDOW
-                                .replace("<AIT_NO>", "AIT_"+aitDbProp.getAitNo())
-                                .replace("<DB_TYPE>", aitDbProp.getDbType());
-                        log.info("Executing delete SQL: " + deleteSql);
-                        boolean deleteSuccess = dbUtil.executeQuery(deleteSql);
-                        log.info("Delete operation success: " + deleteSuccess);
-
-                        // Step 2: Insert new records into ait_scan_window table
-                        String insertSql = QueryConstants.INSERT_AIT_SCAN_WINDOW
-                                .replace("<AIT_NO>", "AIT_"+aitDbProp.getAitNo())
-                                .replace("<DB_TYPE>", aitDbProp.getDbType())
-                                .replace("<PROFILE>", aitDbProp.getProfile());
-                        log.info("Executing insert SQL: " + insertSql);
-                        boolean insertSuccess = dbUtil.executeQuery(insertSql);
-                        log.info("Insert operation success: " + insertSuccess);
-                    }
-                    // Continue with other steps to process the test case
-                    // ...
+                    // Getting TcSteps for testcase from TC_STEPS table
+                    List<TcSteps> tcSteps = tcMasterService.getTcStepsByTcId(tcMaster.getTcId());
+                    log.info("Tc steps for tcId: " + tcMaster.getTcId() + " are: " + tcSteps);
+                    // Process each test case step
+                    tcMasterService.processTestCase(tcMaster);
                 });
 
         // Run once timer to call the queryTcMaster endpoint
