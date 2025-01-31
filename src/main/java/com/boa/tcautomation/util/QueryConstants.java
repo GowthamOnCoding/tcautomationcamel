@@ -1,5 +1,7 @@
 package com.boa.tcautomation.util;
 
+import com.fasterxml.jackson.databind.deser.impl.BeanPropertyMap;
+
 public class QueryConstants {
     public static final String SELECT_ACTIVE_TC_MASTERS = "SELECT * FROM testdb.tc_master WHERE is_active = 1";
     public static final String SELECT_AIT_DB_PROPS = "SELECT * FROM AIT_DBPROP where AIT_NO='<AIT_NO>'";
@@ -13,4 +15,6 @@ public class QueryConstants {
             "('<AIT_NO>', '<DB_TYPE>', 'SAT', '00:00', '23:59', CURRENT_TIMESTAMP, 'system', 'public')," +
             "('<AIT_NO>', '<DB_TYPE>', 'SUN', '00:00', '23:59', CURRENT_TIMESTAMP, 'system', 'public')";
     public static final String SELECT_TC_STEPS_BY_TC_ID = "SELECT * FROM tc_steps WHERE TC_ID='<TC_ID>' ORDER BY SEQUENCE_NO";
+    public static final String SELECT_PARAMETER_SCHEMA = "SELECT * FROM PARAMETER_SCHEMA WHERE SCHEMA_ID='<SCHEMA_ID>'";
+    public static final String SELECT_STEP_CONFIG_BY_STEP_NAME = "SELECT * FROM step_config WHERE step_name='<STEP_NAME>'";
 }

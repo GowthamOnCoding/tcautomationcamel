@@ -1,24 +1,34 @@
-// StepConfig.java
 package com.boa.tcautomation.model;
 
-import lombok.Data;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.Data;
+
+import java.sql.Timestamp;
 
 @Data
 @Entity
-@Table(name = "STEP_CONFIG")
+@Table(name = "step_config")
 public class StepConfig {
-    @Id
-    private String stepName;
-    private String description;
-    private Integer timeoutSeconds;
-    private Integer maxRetries;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
 
-    @OneToMany(mappedBy = "stepName", fetch = FetchType.EAGER)
-    @OrderBy("sequenceNo")
-    private List<StepSchemaMapping> schemaMappings;
+    @Id
+    @Column(nullable = false)
+    private String stepName;
+
+    @Column
+    private String description;
+
+    @Column(nullable = false)
+    private int timeoutSeconds;
+
+    @Column(nullable = false)
+    private int maxRetries;
+
+    @Column
+    private String parameterSchema;
+
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdDate;
+
+    @Column(insertable = false, columnDefinition = "TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP")
+    private Timestamp modifiedDate;
 }

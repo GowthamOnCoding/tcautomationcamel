@@ -1,15 +1,19 @@
 package com.boa.tcautomation.service;
 
-import com.boa.tcautomation.model.AitDbProp;
-import com.boa.tcautomation.model.TcMaster;
-import com.boa.tcautomation.model.TcSteps;
+import com.boa.tcautomation.json.model.LinuxCommandJSON;
+import com.boa.tcautomation.model.*;
+import com.boa.tcautomation.util.DatabaseToCsvUtil;
 import com.boa.tcautomation.util.DbUtil;
 import com.boa.tcautomation.util.QueryConstants;
+import com.boa.tcautomation.util.SshUtil;
+import com.boa.tcautomation.validator.ParameterValidationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -17,6 +21,15 @@ public class TcMasterService {
 
     @Autowired
     private DbUtil dbUtil;
+
+    @Autowired
+    private SshUtil sshUtil;
+
+    @Autowired
+    private DatabaseToCsvUtil databaseToCsvUtil;
+
+    @Autowired
+    private ParameterValidationService parameterValidationService;
 
     private static final Logger log = Logger.getLogger(TcMasterService.class.getName());
 
@@ -43,7 +56,7 @@ public class TcMasterService {
         return dbUtil.executeQuery(insertSql);
     }
 
-    public void deleteInsertScanWindow(TcMaster tcMaster) {
+    public void deleteInsertScanWindow(TcMaster tcMaster,TcSteps tcStep) {
         log.info("Processing test case: " + tcMaster.getTcId());
         String aitNo = tcMaster.getAit_no();
         if (aitNo.startsWith("AIT_")) {
@@ -71,22 +84,76 @@ public class TcMasterService {
         return dbUtil.queryForListWithMapping(sql, TcSteps.class);
     }
 
+    public ParameterSchema getParameterSchema(String schemaId) {
+        String sql = QueryConstants.SELECT_PARAMETER_SCHEMA.replace("<SCHEMA_ID>", schemaId);
+        log.info("Executing getParameterSchema SQL: " + sql);
+        return dbUtil.queryForObject(sql, ParameterSchema.class);
+    }
+
     public void processTestCase(TcMaster tcMaster) {
         log.info("Processing test case: " + tcMaster.getTcId());
         List<TcSteps> tcSteps = getTcStepsByTcId(tcMaster.getTcId());
         for (TcSteps step : tcSteps) {
             String methodName = step.getStepName();
             try {
-                Method method = this.getClass().getMethod(methodName, TcMaster.class);
-                method.invoke(this, tcMaster);
+                Method method = this.getClass().getMethod(methodName, TcMaster.class, TcSteps.class);
+                method.invoke(this, tcMaster, step);
             } catch (Exception e) {
                 log.severe("Error invoking method " + methodName + ": " + e.getMessage());
             }
         }
     }
 
-    public void runLinuxCommand(TcMaster tcMaster) {
+    public void runLinuxCommand(TcMaster tcMaster, TcSteps step) {
         log.info("Running Linux command for test case: " + tcMaster.getTcId());
-        // Implementation
+        try {
+            if (getAndValidateParametersSchema(step)) {
+                LinuxCommandJSON linuxCommandJSON = new ObjectMapper().readValue(step.getParameters(), LinuxCommandJSON.class);
+                // Execute the command using SshUtil
+                String output = sshUtil.executeCommand(linuxCommandJSON.getHostname(), linuxCommandJSON.getCommand());
+                log.info("Command output: " + output);
+            } else {
+                log.severe("Failed to get and validate StepConfig");
+            }
+        } catch (Exception e) {
+            log.severe("Error running command: " + e.getMessage());
+        }
+    }
+
+    public void exportTableToCsv(TcMaster tcMaster, TcSteps step) {
+        log.info("Exporting table to CSV for test case: " + tcMaster.getTcId());
+        String tableName = step.getParameters(); // Assuming parameters column contains the table name
+        String query = "SELECT * FROM " + tableName; // Use the provided table name
+        String destination = "/path/to/destination"; // Replace with actual destination
+        String fileName = "output.csv"; // Replace with actual file name
+        try {
+            databaseToCsvUtil.queryToCsv(query, destination, fileName);
+        } catch (Exception e) {
+            log.severe("Error exporting table to CSV: " + e.getMessage());
+        }
+    }
+    private boolean getAndValidateParametersSchema(TcSteps step) {
+        try {
+            // Get the parameters and store them in a variable
+            String parameters = step.getParameters();
+            log.info("Parameters: " + parameters);
+
+            // Run the query to get StepConfig
+            String sql = QueryConstants.SELECT_STEP_CONFIG_BY_STEP_NAME.replace("<STEP_NAME>", step.getStepName());
+            StepConfig stepConfig = dbUtil.queryForObject(sql, StepConfig.class);
+            log.info("StepConfig: " + stepConfig);
+
+            // If parameter schema ID is not null or empty, validate the parameters
+            if (stepConfig.getParameterSchema() != null && !stepConfig.getParameterSchema().isEmpty()) {
+                ParameterSchema parameterSchema = getParameterSchema(stepConfig.getParameterSchema());
+                Map<String, String> parametersMap = new ObjectMapper().readValue(parameters, Map.class);
+                parameterValidationService.validateParameters(step.getStepName(), parametersMap);
+            }
+
+            return true;
+        } catch (Exception e) {
+            log.severe("Error getting and validating StepConfig: " + e.getMessage());
+            return false;
+        }
     }
 }
