@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>TcMaster List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div th:fragment="content" class="container">
+    <h1>TcMaster List</h1>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Created By</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Modified By</th>
+            <th scope="col">Modified Date</th>
+            <th scope="col">Is Active</th>
+            <th scope="col">AIT No</th>
+            <th scope="col">Config IDs</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tcmaster : ${tcmasters}">
+            <td th:text="${tcmaster.tcId}">[No ID]</td> <!-- Debug: Check if tcId is populated -->
+            <td th:text="${tcmaster.tcName}"></td>
+            <td th:text="${tcmaster.description}"></td>
+            <td th:text="${tcmaster.createdBy}"></td>
+            <td th:text="${tcmaster.createdDate != null} ? ${#temporals.format(tcmaster.createdDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+            <td th:text="${tcmaster.modifiedBy} ?: ''"></td>
+            <td th:text="${tcmaster.modifiedDate != null} ? ${#temporals.format(tcmaster.modifiedDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+            <td th:text="${tcmaster.isActive} ? 'Yes' : 'No'"></td>
+            <td th:text="${tcmaster.aitNo}"></td>
+            <td th:text="${tcmaster.configIds}"></td>
+            <td>
+                <a th:href="@{/tcmasters/edit/{id}(id=${tcmaster.tcId})}" class="btn btn-primary btn-sm">Edit</a>
+                <a th:href="@{/tcmasters/delete/{id}(id=${tcmaster.tcId})}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/tcmasters/add}" class="btn btn-success">Add New</a>
+</div>
+</body>
+</html>

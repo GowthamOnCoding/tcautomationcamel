@@ -1,39 +1,47 @@
 package com.boa.tcautomation.util;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.CamelContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class DatabaseToCsvUtil {
+public class DatabaseToCsvUtil extends RouteBuilder {
 
-    private final CamelContext camelContext;
-    private final ProducerTemplate producerTemplate;
+    @Autowired
+    private DataSource dataSource;
 
-    public DatabaseToCsvUtil() throws Exception {
-        this.camelContext = new DefaultCamelContext();
-        this.producerTemplate = camelContext.createProducerTemplate();
-        camelContext.start();
+    @Autowired
+    private CamelContext camelContext;
+
+    @Override
+    public void configure() throws Exception {
+        // Error handling
+        onException(Exception.class)
+                .log("Error occurred: ${exception.message}")
+                .handled(true)
+                .end();
+
+        from("direct:queryToCsv")
+                .routeId("queryToCsvRoute")
+                .log("Executing query: ${body}")
+                .to("jdbc:dataSource")
+                .marshal().csv()
+                .log("Writing to file: ${header.destination}/${header.fileName}")
+                .toD("file:${header.destination}?fileName=${header.fileName}"); // Use headers for destination and fileName
     }
 
     public void queryToCsv(String query, String destination, String fileName) throws Exception {
-        camelContext.addRoutes(new RouteBuilder() {
-            @Override
-            public void configure() {
-                from("direct:queryToCsv")
-                        .to("jdbc:dataSource") // Assumes a DataSource bean is configured
-                        .marshal().csv()
-                        .toD("file:" + destination + "?fileName=" + fileName + "&fileExist=Append");
-            }
-        });
+        // Create a message with the query, destination, and fileName
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("destination", destination);
+        headers.put("fileName", fileName);
+        log.info("Querying database and writing to CSV file: {}", headers);
 
-        producerTemplate.sendBodyAndHeaders("direct:queryToCsv", query, Map.of(
-                "destination", destination,
-                "fileName", fileName
-        ));
+        // Trigger the route
+        camelContext.createProducerTemplate().sendBodyAndHeaders("direct:queryToCsv", query, headers);
     }
 }

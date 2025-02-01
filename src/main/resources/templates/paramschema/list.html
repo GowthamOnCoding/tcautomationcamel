@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="content">
+    <h1>Parameter Schema List</h1>
+    <table>
+        <tr>
+            <th>Schema ID</th>
+            <th>Schema Version</th>
+            <th>Schema Definition</th>
+            <th>Is Active</th>
+            <th>Description</th>
+            <th>Created Date</th>
+            <th>Modified Date</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="parameter : ${parameters}">
+            <td th:text="${parameter.schemaId}"></td>
+            <td th:text="${parameter.schemaVersion}"></td>
+            <td th:text="${parameter.schemaDefinition}"></td>
+            <td th:text="${parameter.isActive}"></td>
+            <td th:text="${parameter.description}"></td>
+            <td th:text="${parameter.createdDate}"></td>
+            <td th:text="${parameter.modifiedDate}"></td>
+            <td>
+                <a th:href="@{/parameters/edit/{schemaId}(schemaId=${parameter.schemaId})}">Edit</a>
+                <a th:href="@{/parameters/delete/{schemaId}(schemaId=${parameter.schemaId})}">Delete</a>
+            </td>
+        </tr>
+    </table>
+    <a th:href="@{/parameters/add}">Add New</a>
+</div>
+</body>
+</html>

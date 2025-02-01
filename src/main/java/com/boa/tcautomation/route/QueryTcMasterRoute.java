@@ -2,7 +2,8 @@ package com.boa.tcautomation.route;
 
 import com.boa.tcautomation.model.TcMaster;
 import com.boa.tcautomation.model.TcSteps;
-import com.boa.tcautomation.service.TcMasterService;
+import com.boa.tcautomation.service.TcExecutionService;
+import com.boa.tcautomation.helper.TcMasterServiceHelper;
 import com.boa.tcautomation.util.DbUtil;
 import com.boa.tcautomation.util.QueryConstants;
 import org.apache.camel.builder.RouteBuilder;
@@ -23,7 +24,10 @@ public class QueryTcMasterRoute extends RouteBuilder {
     private DbUtil dbUtil;
 
     @Autowired
-    private TcMasterService tcMasterService;
+    private TcExecutionService tcExecutionService;
+
+    @Autowired
+    private TcMasterServiceHelper tcMasterServiceHelper;
 
     /**
      * Configures the routes for querying TcMaster records and processing each test case.
@@ -61,10 +65,10 @@ public class QueryTcMasterRoute extends RouteBuilder {
                 .process(exchange -> {
                     TcMaster tcMaster = exchange.getIn().getBody(TcMaster.class);
                     // Getting TcSteps for testcase from TC_STEPS table
-                    List<TcSteps> tcSteps = tcMasterService.getTcStepsByTcId(tcMaster.getTcId());
+                    List<TcSteps> tcSteps = tcMasterServiceHelper.getTcStepsByTcId(tcMaster.getTcId());
                     log.info("Tc steps for tcId: " + tcMaster.getTcId() + " are: " + tcSteps);
                     // Process each test case step
-                    tcMasterService.processTestCase(tcMaster);
+                    tcExecutionService.processTestCase(tcMaster);
                 });
 
         // Run once timer to call the queryTcMaster endpoint

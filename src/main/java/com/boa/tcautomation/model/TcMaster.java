@@ -12,11 +12,11 @@ public class TcMaster {
     private String tcId;
     private String tcName;
     private String description;
-    private String flag;
     private String createdBy;
     private LocalDateTime createdDate;
     private String modifiedBy;
     private LocalDateTime modifiedDate;
-    private String is_active;
-    private String ait_no;
+    private String isActive;
+    private String aitNo;
+    private String configIds;
 }

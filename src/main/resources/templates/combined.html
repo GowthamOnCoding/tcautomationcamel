@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Combined TcMasters and ParameterSchema</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Combined TcMasters and ParameterSchema</h1>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="tcmasters-tab" data-toggle="tab" href="#tcmasters" role="tab" aria-controls="tcmasters" aria-selected="true">TcMasters</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="paramschema-tab" data-toggle="tab" href="#paramschema" role="tab" aria-controls="paramschema" aria-selected="false">ParameterSchema</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="tcmasters" role="tabpanel" aria-labelledby="tcmasters-tab">
+
+            <div th:replace="~{tcmasters/list :: content}"></div>
+        </div>
+        <div class="tab-pane fade" id="paramschema" role="tabpanel" aria-labelledby="paramschema-tab">
+            <h2>Parameter Schema List</h2>
+            <div th:replace="~{paramschema/list :: content}"></div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

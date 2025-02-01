@@ -1,4 +1,3 @@
-// ParameterSchema.java
 package com.boa.tcautomation.model;
 
 import lombok.Data;
@@ -18,4 +17,13 @@ public class ParameterSchema {
     private String description;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+
+    // Getter and Setter for isActive
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 }

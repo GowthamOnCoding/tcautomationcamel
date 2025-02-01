@@ -156,4 +156,7 @@ public class DbUtil {
         return null;
     }
 }
+    public int update(String sql, Object... args) {
+        return jdbcTemplate.update(sql, args);
+    }
 }
