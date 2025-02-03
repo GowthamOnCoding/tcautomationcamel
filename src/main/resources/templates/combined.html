@@ -1,33 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Combined TcMasters and ParameterSchema</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <title>Combined TcMasters, ParameterSchema, and StepConfig</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <style>
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e1e1e1;
+            margin-bottom: 20px;
+        }
+        .tabs a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #555;
+            border-bottom: 2px solid transparent;
+        }
+        .tabs a.active {
+            border-bottom: 2px solid #1EAEDB;
+            color: #1EAEDB;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Combined TcMasters and ParameterSchema</h1>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="tcmasters-tab" data-toggle="tab" href="#tcmasters" role="tab" aria-controls="tcmasters" aria-selected="true">TcMasters</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="paramschema-tab" data-toggle="tab" href="#paramschema" role="tab" aria-controls="paramschema" aria-selected="false">ParameterSchema</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="tcmasters" role="tabpanel" aria-labelledby="tcmasters-tab">
+<!-- Include the navigation bar fragment -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-            <div th:replace="~{tcmasters/list :: content}"></div>
-        </div>
-        <div class="tab-pane fade" id="paramschema" role="tabpanel" aria-labelledby="paramschema-tab">
-            <h2>Parameter Schema List</h2>
-            <div th:replace="~{paramschema/list :: content}"></div>
-        </div>
+<div class="container" style="margin-top: 80px;">
+    <h1>Combined TcMasters, ParameterSchema, and StepConfig</h1>
+    <div class="tabs">
+        <a href="#tcmasters" class="active">TcMasters</a>
+        <a href="#paramschema">ParameterSchema</a>
+        <a href="#stepconfig">StepConfig</a>
+    </div>
+    <div id="tcmasters" class="tab-content active">
+        <div th:replace="~{tcmasters/list :: content}"></div>
+    </div>
+    <div id="paramschema" class="tab-content">
+        <h2>Parameter Schema List</h2>
+        <div th:replace="~{paramschema/list :: content}"></div>
+    </div>
+    <div id="stepconfig" class="tab-content">
+        <h2>Step Config List</h2>
+        <div th:replace="~{stepconfig/list :: content}"></div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('.tabs a');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = this.getAttribute('href').substring(1);
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        $('#tcmasters-table').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true
+        });
+
+        $('#paramschema-table').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true
+        });
+
+        $('#stepconfig-table').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true
+        });
+    });
+</script>
 </body>
 </html>

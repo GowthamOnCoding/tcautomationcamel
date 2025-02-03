@@ -3,11 +3,13 @@
 <head>
     <title>TcMaster List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 </head>
 <body>
 <div th:fragment="content" class="container">
     <h1>TcMaster List</h1>
-    <table class="table table-bordered table-striped">
+    <table id="tcmasters-table" class="table table-bordered table-striped">
         <thead>
         <tr>
             <th scope="col">ID</th>
@@ -25,7 +27,7 @@
         </thead>
         <tbody>
         <tr th:each="tcmaster : ${tcmasters}">
-            <td th:text="${tcmaster.tcId}">[No ID]</td> <!-- Debug: Check if tcId is populated -->
+            <td th:text="${tcmaster.tcId}">[No ID]</td>
             <td th:text="${tcmaster.tcName}"></td>
             <td th:text="${tcmaster.description}"></td>
             <td th:text="${tcmaster.createdBy}"></td>
@@ -44,5 +46,21 @@
     </table>
     <a th:href="@{/tcmasters/add}" class="btn btn-success">Add New</a>
 </div>
+
+<!-- jQuery (required for DataTables) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Initialize DataTables -->
+<script>
+    $(document).ready(function() {
+        $('#tcmasters-table').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true
+        });
+    });
+</script>
 </body>
 </html>

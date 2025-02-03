@@ -8,6 +8,8 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 5
       idle-timeout: 300000
+    thymleaf:
+      cache: false
   jpa:
     hibernate:
       ddl-auto: validate  # or 'validate', 'create', 'create-drop'
@@ -34,3 +36,4 @@ ssh:
 # src/main/resources/application-dev.yml
 common:
   destination: C:\\tca
+

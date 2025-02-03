@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Step Config List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+<div th:fragment="content" class="container">
+    <h1>Step Config List</h1>
+    <table id="stepconfig-table" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Step Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Timeout Seconds</th>
+            <th scope="col">Max Retries</th>
+            <th scope="col">Parameter Schema</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Modified Date</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="stepConfig : ${stepConfigs}">
+            <td th:text="${stepConfig.stepName}">[No Step Name]</td>
+            <td th:text="${stepConfig.description}"></td>
+            <td th:text="${stepConfig.timeoutSeconds}"></td>
+            <td th:text="${stepConfig.maxRetries}"></td>
+            <td th:text="${stepConfig.parameterSchema}"></td>
+            <td th:text="${stepConfig.createdDate != null} ? ${#temporals.format(stepConfig.createdDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+            <td th:text="${stepConfig.modifiedDate != null} ? ${#temporals.format(stepConfig.modifiedDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+            <td>
+                <a th:href="@{/stepconfig/edit/{stepName}(stepName=${stepConfig.stepName})}" class="btn btn-primary btn-sm">Edit</a>
+                <a th:href="@{/stepconfig/delete/{stepName}(stepName=${stepConfig.stepName})}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/stepconfig/add}" class="btn btn-success">Add New</a>
+</div>
+
+<!-- jQuery (required for DataTables) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Initialize DataTables -->
+<script>
+    $(document).ready(function() {
+        $('#stepconfig-table').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true
+        });
+    });
+</script>
+</body>
+</html>

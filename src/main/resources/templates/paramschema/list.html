@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<head>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+</head>
+
 <body>
 <div th:fragment="content">
     <h1>Parameter Schema List</h1>
-    <table>
+    <!-- Add an ID to the table for DataTables initialization -->
+    <table id="paramschema-table" class="display">
+        <thead>
         <tr>
             <th>Schema ID</th>
             <th>Schema Version</th>
@@ -15,6 +22,8 @@
             <th>Modified Date</th>
             <th>Actions</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="parameter : ${parameters}">
             <td th:text="${parameter.schemaId}"></td>
             <td th:text="${parameter.schemaVersion}"></td>
@@ -28,8 +37,26 @@
                 <a th:href="@{/parameters/delete/{schemaId}(schemaId=${parameter.schemaId})}">Delete</a>
             </td>
         </tr>
+        </tbody>
     </table>
     <a th:href="@{/parameters/add}">Add New</a>
 </div>
+
+<!-- jQuery (required for DataTables) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Initialize DataTables -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize DataTables for the ParameterSchema table
+        $('#paramschema-table').DataTable({
+            paging: true,       // Enable pagination
+            searching: true,    // Enable search bar
+            ordering: true,     // Enable column sorting
+            responsive: true    // Enable responsive design
+        });
+    });
+</script>
 </body>
 </html>
