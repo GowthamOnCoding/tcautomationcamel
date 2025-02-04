@@ -29,8 +29,8 @@
             <td th:text="${stepConfig.timeoutSeconds}"></td>
             <td th:text="${stepConfig.maxRetries}"></td>
             <td th:text="${stepConfig.parameterSchema}"></td>
-            <td th:text="${stepConfig.createdDate != null} ? ${#temporals.format(stepConfig.createdDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
-            <td th:text="${stepConfig.modifiedDate != null} ? ${#temporals.format(stepConfig.modifiedDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+            <td th:text="${stepConfig.createdDate != null} ? ${#dates.format(stepConfig.createdDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+            <td th:text="${stepConfig.modifiedDate != null} ? ${#dates.format(stepConfig.modifiedDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
             <td>
                 <a th:href="@{/stepconfig/edit/{stepName}(stepName=${stepConfig.stepName})}" class="btn btn-primary btn-sm">Edit</a>
                 <a th:href="@{/stepconfig/delete/{stepName}(stepName=${stepConfig.stepName})}" class="btn btn-danger btn-sm">Delete</a>

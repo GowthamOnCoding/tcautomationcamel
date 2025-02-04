@@ -54,11 +54,21 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tabs = document.querySelectorAll('.tabs a');
         const tabContents = document.querySelectorAll('.tab-content');
 
+        // Track if DataTables has been initialized for each table
+        const initializedTables = {
+            'tcmasters-table': false,
+            'paramschema-table': false,
+            'stepconfig-table': false
+        };
+
+        // Tab switching logic
         tabs.forEach(tab => {
             tab.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -68,30 +78,99 @@
                 tabContents.forEach(tc => tc.classList.remove('active'));
 
                 this.classList.add('active');
-                document.getElementById(target).classList.add('active');
+                const targetContent = document.getElementById(target);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+
+                    // Load content dynamically if not already loaded
+                    if (!targetContent.dataset.loaded) {
+                        loadTabContent(target, targetContent);
+                    } else {
+                        // Initialize DataTables for the active tab's table
+                        initializeDataTableForTab(target);
+                    }
+                } else {
+                    console.error(`Target element with id '${target}' not found`);
+                }
             });
         });
 
-        $('#tcmasters-table').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            responsive: true
-        });
+        // Function to load tab content dynamically
+        function loadTabContent(tabId, targetElement) {
+            let url;
+            switch (tabId) {
+                case 'tcmasters':
+                    url = '/tcmasters';
+                    break;
+                case 'paramschema':
+                    url = '/paramschema';
+                    break;
+                case 'stepconfig':
+                    url = '/stepconfig/list';
+                    break;
+                default:
+                    console.error(`Unknown tab id: ${tabId}`);
+                    return;
+            }
 
-        $('#paramschema-table').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            responsive: true
-        });
+            console.log(`Fetching content from: ${url}`);
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log(`Received content for ${tabId}:`, html.substring(0, 100) + '...');
+                    targetElement.innerHTML = html;
+                    targetElement.dataset.loaded = 'true';
+                    initializeDataTableForTab(tabId);
+                })
+                .catch(error => console.error('Error loading content:', error));
+        }
 
-        $('#stepconfig-table').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            responsive: true
-        });
+        // Function to initialize DataTables for a specific tab
+        function initializeDataTableForTab(tabId) {
+            let tableId;
+            switch (tabId) {
+                case 'tcmasters':
+                    tableId = 'tcmasters-table';
+                    break;
+                case 'paramschema':
+                    tableId = 'paramschema-table';
+                    break;
+                case 'stepconfig':
+                    tableId = 'stepconfig-table';
+                    break;
+                default:
+                    console.error(`Unknown tab id for DataTables: ${tabId}`);
+                    return;
+            }
+
+            // Initialize DataTables only if the table exists and hasn't been initialized yet
+            const table = document.getElementById(tableId);
+            if (table && !initializedTables[tableId]) {
+                $(table).DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    responsive: true
+                });
+                initializedTables[tableId] = true; // Mark as initialized
+                console.log(`DataTable initialized for ${tableId}`);
+            } else if (!table) {
+                console.error(`Table with id '${tableId}' not found`);
+            }
+        }
+
+        // Load and initialize DataTables for the default active tab (TcMasters)
+        const defaultTab = document.getElementById('tcmasters');
+        if (defaultTab) {
+            loadTabContent('tcmasters', defaultTab);
+        } else {
+            console.error("Default tab 'tcmasters' not found");
+        }
     });
 </script>
 </body>
