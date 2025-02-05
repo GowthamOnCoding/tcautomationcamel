@@ -10,13 +10,13 @@ import java.util.Properties;
 @Component
 public class SshUtil {
 
-    @Value("${ssh.port}")
+    @Value("${ssh.port:22}")
     private int port;
 
-    @Value("${ssh.user}")
+    @Value("${ssh.user:root}")
     private String user;
 
-    @Value("${ssh.password}")
+    @Value("${ssh.password:root}")
     private String password;
 
     private Session createSession(String host) throws JSchException {
