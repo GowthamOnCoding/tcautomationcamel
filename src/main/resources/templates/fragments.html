@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Header Fragment -->
+<header th:fragment="header">
+    <div class="container">
+        <h3 class="accent-text">Test Management System</h3>
+        <nav class="header-tabs">
+            <a th:href="@{/tcmasters}">Manage Testcases</a>
+            <a th:href="@{/stepconfigs}">Manage Steps</a>
+            <a th:href="@{/parameters}">Schema Definition</a>
+            <a th:href="@{/hosts}">Manage Hosts</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Footer Fragment -->
+<footer th:fragment="footer">
+    <div class="container">
+        <p>&copy; 2023 QA Management Suite. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Scripts Fragment -->
+<div th:fragment="scripts">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</div>
+
+</body>
+</html>

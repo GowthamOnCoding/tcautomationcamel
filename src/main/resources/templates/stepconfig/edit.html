@@ -2,39 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Step Config</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
+
+<!-- Header -->
+<div th:replace="~{fragments :: header}"></div>
+
+<!-- Main Content -->
 <div class="container">
-    <h1>Edit Step Config</h1>
-    <form th:object="${stepConfig}" th:action="@{/stepconfig/update}" method="post">
-        <div class="form-group">
-            <label for="stepName">Step Name:</label>
-            <input type="text" id="stepName" th:field="*{stepName}" class="form-control" readonly />
-        </div>
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <input type="text" id="description" th:field="*{description}" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label for="timeoutSeconds">Timeout Seconds:</label>
-            <input type="number" id="timeoutSeconds" th:field="*{timeoutSeconds}" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label for="maxRetries">Max Retries:</label>
-            <input type="number" id="maxRetries" th:field="*{maxRetries}" class="form-control" required />
-        </div>
-        <div class="form-group">
-            <label for="parameterSchema">Parameter Schema:</label>
-            <input type="text" id="parameterSchema" th:field="*{parameterSchema}" class="form-control" />
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Update</button>
-        </div>
-    </form>
+    <div class="main-content">
+        <h1 class="red-text">Edit Step Config</h1>
+        <form th:object="${stepConfig}" th:action="@{/stepconfig/update}" method="post">
+            <div class="form-group">
+                <label for="stepName">Step Name:</label>
+                <input type="text" id="stepName" th:field="*{stepName}" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" id="description" th:field="*{description}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="timeoutSeconds">Timeout Seconds:</label>
+                <input type="number" id="timeoutSeconds" th:field="*{timeoutSeconds}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="maxRetries">Max Retries:</label>
+                <input type="number" id="maxRetries" th:field="*{maxRetries}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="parameterSchema">Parameter Schema:</label>
+                <input type="text" id="parameterSchema" th:field="*{parameterSchema}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<!-- Footer -->
+<div th:replace="~{fragments :: footer}"></div>
+
+<!-- Scripts -->
+<div th:replace="~{fragments :: scripts}"></div>
+
 </body>
 </html>

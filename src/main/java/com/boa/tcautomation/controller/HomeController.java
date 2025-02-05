@@ -25,7 +25,6 @@ public class HomeController {
         List<TcMaster> tcMasters = tcMasterService.findAll();
         List<ParameterSchema> parameters = parameterSchemaService.findAll();
         model.addAttribute("tcmasters", tcMasters);
-        model.addAttribute("parameters", parameters);
-        return "combined";
+       return "tcmasters/list";
     }
 }

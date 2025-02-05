@@ -37,3 +37,7 @@ ssh:
 common:
   destination: C:\\tca
 
+server:
+  port: 8060
+
+

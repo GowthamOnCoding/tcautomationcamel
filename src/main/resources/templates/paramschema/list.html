@@ -2,50 +2,61 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <title>Parameter Schema List</title>
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
-<div th:fragment="content">
-    <h1>Parameter Schema List</h1>
-    <!-- Add an ID to the table for DataTables initialization -->
-    <table id="paramschema-table" class="display">
-        <thead>
-        <tr>
-            <th>Schema ID</th>
-            <th>Schema Version</th>
-            <th>Schema Definition</th>
-            <th>Is Active</th>
-            <th>Description</th>
-            <th>Created Date</th>
-            <th>Modified Date</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="parameter : ${parameters}">
-            <td th:text="${parameter.schemaId}"></td>
-            <td th:text="${parameter.schemaVersion}"></td>
-            <td th:text="${parameter.schemaDefinition}"></td>
-            <td th:text="${parameter.isActive}"></td>
-            <td th:text="${parameter.description}"></td>
-            <td th:text="${parameter.createdDate}"></td>
-            <td th:text="${parameter.modifiedDate}"></td>
-            <td>
-                <a th:href="@{/parameters/edit/{schemaId}(schemaId=${parameter.schemaId})}">Edit</a>
-                <a th:href="@{/parameters/delete/{schemaId}(schemaId=${parameter.schemaId})}">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/parameters/add}">Add New</a>
+
+<!-- Header -->
+<div th:replace="~{fragments :: header}"></div>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="main-content">
+        <h1 class="red-text">Parameter Schema List</h1>
+        <!-- Add an ID to the table for DataTables initialization -->
+        <table id="paramschema-table" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Schema ID</th>
+                <th>Schema Version</th>
+                <th>Schema Definition</th>
+                <th>Is Active</th>
+                <th>Description</th>
+                <th>Created Date</th>
+                <th>Modified Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="parameter : ${parameters}">
+                <td th:text="${parameter.schemaId}"></td>
+                <td th:text="${parameter.schemaVersion}"></td>
+                <td th:text="${parameter.schemaDefinition}"></td>
+                <td th:text="${parameter.isActive}"></td>
+                <td th:text="${parameter.description}"></td>
+                <td th:text="${parameter.createdDate}"></td>
+                <td th:text="${parameter.modifiedDate}"></td>
+                <td>
+                    <a th:href="@{/parameters/edit/{schemaId}(schemaId=${parameter.schemaId})}" class="btn btn-primary btn-sm">Edit</a>
+                    <a th:href="@{/parameters/delete/{schemaId}(schemaId=${parameter.schemaId})}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/parameters/add}" class="btn btn-success">Add New</a>
+    </div>
 </div>
 
-<!-- jQuery (required for DataTables) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Footer -->
+<div th:replace="~{fragments :: footer}"></div>
+
+<!-- Scripts -->
+<div th:replace="~{fragments :: scripts}"></div>
+
 <!-- Initialize DataTables -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -58,5 +69,6 @@
         });
     });
 </script>
+
 </body>
 </html>

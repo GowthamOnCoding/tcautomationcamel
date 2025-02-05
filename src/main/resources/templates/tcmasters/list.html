@@ -1,64 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>TcMaster List</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank of America Themed Landing Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<div th:fragment="content" class="container">
-    <h1>TcMaster List</h1>
-    <table id="tcmasters-table" class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Created By</th>
-            <th scope="col">Created Date</th>
-            <th scope="col">Modified By</th>
-            <th scope="col">Modified Date</th>
-            <th scope="col">Is Active</th>
-            <th scope="col">AIT No</th>
-            <th scope="col">Config IDs</th>
-            <th scope="col">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="tcmaster : ${tcmasters}">
-            <td th:text="${tcmaster.tcId}">[No ID]</td>
-            <td th:text="${tcmaster.tcName}"></td>
-            <td th:text="${tcmaster.description}"></td>
-            <td th:text="${tcmaster.createdBy}"></td>
-            <td th:text="${tcmaster.createdDate != null} ? ${#temporals.format(tcmaster.createdDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
-            <td th:text="${tcmaster.modifiedBy} ?: ''"></td>
-            <td th:text="${tcmaster.modifiedDate != null} ? ${#temporals.format(tcmaster.modifiedDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
-            <td th:text="${tcmaster.isActive} ? 'Yes' : 'No'"></td>
-            <td th:text="${tcmaster.aitNo}"></td>
-            <td th:text="${tcmaster.configIds}"></td>
-            <td>
-                <a th:href="@{/tcmasters/edit/{id}(id=${tcmaster.tcId})}" class="btn btn-primary btn-sm">Edit</a>
-                <a th:href="@{/tcmasters/delete/{id}(id=${tcmaster.tcId})}" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/tcmasters/add}" class="btn btn-success">Add New</a>
+
+<!-- Header -->
+<div th:replace="~{fragments :: header}"></div>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="main-content">
+        <h1 class="red-text">TcMaster List</h1>
+        <table id="tcmasters-table" class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Modified By</th>
+                <th>Modified Date</th>
+                <th>Is Active</th>
+                <th>AIT No</th>
+                <th>Config IDs</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tcmaster : ${tcmasters}">
+                <td th:text="${tcmaster.tcId}">[No ID]</td>
+                <td th:text="${tcmaster.tcName}"></td>
+                <td th:text="${tcmaster.description}"></td>
+                <td th:text="${tcmaster.createdBy}"></td>
+                <td th:text="${tcmaster.createdDate != null} ? ${#temporals.format(tcmaster.createdDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+                <td th:text="${tcmaster.modifiedBy} ?: ''"></td>
+                <td th:text="${tcmaster.modifiedDate != null} ? ${#temporals.format(tcmaster.modifiedDate, 'yyyy-MM-dd HH:mm:ss')} : ''"></td>
+                <td th:text="${tcmaster.isActive} ? 'Yes' : 'No'"></td>
+                <td th:text="${tcmaster.aitNo}"></td>
+                <td th:text="${tcmaster.configIds}"></td>
+                <td>
+                    <a th:href="@{/tcmasters/edit/{id}(id=${tcmaster.tcId})}" class="btn btn-primary btn-sm">Edit</a>
+                    <a th:href="@{/tcmasters/delete/{id}(id=${tcmaster.tcId})}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/tcmasters/add}" class="btn btn-success" style="background-color: var(--secondary); border-color: var(--accent);">
+            Add New Test Case
+        </a>
+    </div>
 </div>
 
-<!-- jQuery (required for DataTables) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<!-- Initialize DataTables -->
+
+<!-- Footer -->
+<div th:replace="~{fragments :: footer}"></div>
+
+<!-- Scripts -->
+<div th:replace="~{fragments :: scripts}"></div>
+
+<!-- Page-specific Script -->
 <script>
     $(document).ready(function() {
         $('#tcmasters-table').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            responsive: true
+            "pageLength": 25,
+            "columnDefs": [
+                { "orderable": false, "targets": [10] }
+            ]
         });
     });
 </script>
